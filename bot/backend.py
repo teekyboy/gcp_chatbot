@@ -5,7 +5,7 @@ import pinecone
 from create import load_documents
 from langchain.vectorstores import Pinecone
 
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '/Users/teekyboy/code/gcp/chatbot-t1-firebase.json'
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '../chatbot-t1-firebase.json'
 
 def upload_file_to_gcs(uploaded_file, folder_prefix):
     storage_client = storage.Client()

@@ -20,4 +20,4 @@ ENV PORT=8080
 
 EXPOSE $PORT
 
-CMD ["sh", "-c", "streamlit run --server.port $PORT personal_bot/frontend.py"]
+CMD ["sh", "-c", "streamlit run --server.port $PORT bot/frontend.py"]

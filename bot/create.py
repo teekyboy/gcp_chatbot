@@ -1,39 +1,22 @@
+from langchain.document_loaders import GCSDirectoryLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.embeddings.openai import OpenAIEmbeddings
 import os
 import configparser
-from langchain.vectorstores import FAISS
-from langchain.embeddings import OpenAIEmbeddings
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.document_loaders import DirectoryLoader
 
-def load_config():
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '/Users/teekyboy/code/gcp/chatbot-t1-firebase.json'
+
+def load_documents():
+    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '/Users/teekyboy/code/gcp/chatbot-t1-firebase.json'
     config = configparser.ConfigParser()
     config.read('../config.ini')
-    return config.get('api_key', 'openai')
-
-def load_and_process_documents(loader):
-    data = loader.load()
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=150, chunk_overlap=20)
-    return text_splitter.split_documents(data)
-
-def initialize_faiss_db(texts, embeddings):
-    return FAISS.from_documents(documents=texts, embedding=embeddings)
-
-def save_faiss_db(vectordb, vector_directory):
-    vectordb.save_local(vector_directory)
-
-def upload_and_create(uploaded_files):
-    loader = DirectoryLoader("../data/input/")
-    vector_directory = "../data/embeddings/"
-    OPENAI_API_KEY = load_config()
-
-    if uploaded_files:
-        for file in uploaded_files:
-            with open(os.path.join("../data/input/", file.name), "wb") as f:
-                f.write(file.getbuffer())
-
-        texts = load_and_process_documents(loader)
-        embeddings = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY)
-        vectordb = initialize_faiss_db(texts, embeddings)
-        save_faiss_db(vectordb, vector_directory)
-        return True
-    return False
+    OPENAI_API_KEY = config.get('api_key', 'openai')
+    PINECONE_API_KEY = config.get('api_key', 'pinecone')
+    PINECONE_ENV = config.get('env', 'pinecone')
+    PINECONE_INDEX = config.get('index', 'pinecone')
+    loader = GCSDirectoryLoader(project_name="chatbot", bucket="chatbot-t1.appspot.com", prefix="data/input")
+    documents = loader.load()
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=200, chunk_overlap=20)
+    docs = text_splitter.split_documents(documents)
+    embeddings = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY)
+    return docs, embeddings, PINECONE_API_KEY, PINECONE_ENV, PINECONE_INDEX

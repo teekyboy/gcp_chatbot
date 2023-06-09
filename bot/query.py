@@ -46,7 +46,11 @@ def run_query(user_input, db, OPENAI_API_KEY):
 def log_question_answer(query, answer):
     prefix = 'data/output/'
     log_file = f'{prefix}questions_answers.csv'
+<<<<<<< HEAD
     bucket_name = 'chatbot.com'
+=======
+    bucket_name = 'chatbot.appspot.com'
+>>>>>>> fabfcc05889160208b1260cc8b26beaa4f76377a
     data = {'question': [query], 'answer': [answer]}
     df = pd.DataFrame(data)
     storage_client = storage.Client()

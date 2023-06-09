@@ -4,7 +4,7 @@ from langchain.embeddings.openai import OpenAIEmbeddings
 import os
 from google.cloud import secretmanager_v1
 
-os.environ['GOOGLE_CLOUD_PROJECT'] = 'chatbot-t1'
+os.environ['GOOGLE_CLOUD_PROJECT'] = 'chatbot'
 
 def get_secret(secret_id):
     project_id = os.environ['GOOGLE_CLOUD_PROJECT']
@@ -15,14 +15,14 @@ def get_secret(secret_id):
 
 def load_documents():
     #for cloud run
-    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '/app/chatbot-t1-firebase.json'
+    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '/app/chatbot.json'
     #for local run
-    #os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '../chatbot-t1-firebase.json'
+    #os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '../chatbot.json'
     OPENAI_API_KEY = get_secret('openai_api_key')
     PINECONE_API_KEY = get_secret('pinecone_api_key')
     PINECONE_ENV = get_secret('pinecone_env')
     PINECONE_INDEX = get_secret('pinecone_index')
-    loader = GCSDirectoryLoader(project_name="chatbot", bucket="chatbot-t1.appspot.com", prefix="data/input")
+    loader = GCSDirectoryLoader(project_name="chatbot", bucket="chatbot.appspot.com", prefix="data/input")
     documents = loader.load()
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=200, chunk_overlap=20)
     docs = text_splitter.split_documents(documents)

@@ -14,7 +14,10 @@ def get_secret(secret_id):
     response = client.access_secret_version(request={"name": secret_name})
     return response.payload.data.decode('UTF-8')
 
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '../chatbot-t1-firebase.json'
+#for cloud run
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '/app/chatbot-t1-firebase.json'
+#for local run
+#os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '../chatbot-t1-firebase.json'
 OPENAI_API_KEY = get_secret('openai_api_key')
 PINECONE_API_KEY = get_secret('pinecone_api_key')
 PINECONE_ENV = get_secret('pinecone_env')
@@ -24,7 +27,7 @@ embeddings = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY)
 db = Pinecone.from_existing_index(index_name, embeddings)
 
 def main():
-    st.title("Question Answering")
+    st.title("What do you want to know?")
     st.subheader("Ask Questions")
     user_input = st.text_input("Enter your question:")
 

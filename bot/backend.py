@@ -5,11 +5,14 @@ import pinecone
 from create import load_documents
 from langchain.vectorstores import Pinecone
 
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '../chatbot-t1-firebase.json'
+#for cloud run
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '/app/chatbot.json'
+#for local run
+#os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '../chatbot.json'
 
 def upload_file_to_gcs(uploaded_file, folder_prefix):
     storage_client = storage.Client()
-    bucket_name = "chatbot-t1.appspot.com"
+    bucket_name = "chatbot.appspot.com"
     bucket = storage_client.get_bucket(bucket_name)
     blob = bucket.blob(f"{folder_prefix}/{uploaded_file.name}")
     blob.upload_from_string(uploaded_file.getvalue(), content_type=uploaded_file.type)
@@ -21,7 +24,7 @@ def create_database(docs, embeddings, PINECONE_API_KEY, PINECONE_ENV, PINECONE_I
     return db
 
 def app():
-    st.title("Create Database")
+    st.title("Upload New Files")
     uploaded_file = st.file_uploader("Choose a file to upload", type=['txt', 'pdf', 'doc', 'docx'])
 
     if uploaded_file is not None:

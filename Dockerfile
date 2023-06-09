@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt /app
+COPY chatbot.json .
 
 RUN pip install --no-cache-dir --trusted-host pypi.python.org -r requirements.txt
 
@@ -20,4 +21,4 @@ ENV PORT=8080
 
 EXPOSE $PORT
 
-CMD ["sh", "-c", "streamlit run --server.port $PORT bot/frontend.py"]
+CMD ["sh", "-c", "streamlit run --server.port $PORT bot/app.py"]

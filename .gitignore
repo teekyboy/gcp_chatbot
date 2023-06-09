@@ -164,3 +164,7 @@ config.ini
 
 #notebook folder
 notebook/
+
+#personal data
+chatbot.json
+.python-version
